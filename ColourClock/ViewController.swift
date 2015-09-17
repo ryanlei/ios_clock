@@ -10,16 +10,42 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var timeLabel: UILabel!
+    let date = NSDate()
+    let dateFormatter = NSDateFormatter()
+    let calendar = NSCalendar.currentCalendar()
+    let flags = NSCalendarUnit.Hour.union(.Minute).union(.Second)
+    var timer: NSTimer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(1,
+            target: self,
+            selector: "updateTime:",
+            userInfo: nil,
+            repeats: true)
+        
+        dateFormatter.locale = NSLocale(localeIdentifier: "en_GB")
+        dateFormatter.dateStyle = .NoStyle
+        dateFormatter.timeStyle = .MediumStyle
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func updateTime(timer: NSTimer) {
+        let date = NSDate()
+        timeLabel.text = dateFormatter.stringFromDate(date)
+        
+        let components = calendar.components(flags, fromDate: date)
+        
+        let hour = CGFloat(components.hour)
+        let minute = CGFloat(components.minute)
+        let second = CGFloat(components.second)
+        
+        let color = UIColor(red: hour/24, green: minute/60, blue: second/60, alpha: 1)
+        
+        UIView.animateWithDuration(1){() -> Void in self.view.backgroundColor = color}
+        
     }
-
 
 }
 
